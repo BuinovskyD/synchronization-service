@@ -1,0 +1,43 @@
+logging:
+  level:
+    root: INFO
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: app-db-pool
+      maximum-pool-size: 10
+      connection-test-query: select 1
+  thymeleaf:
+    mode: text
+    suffix: .sql
+    prefix: classpath:/sql/templates/
+    view-names: '*-tpl'
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  task:
+    scheduling:
+      pool:
+        size: 3
+  liquibase:
+    change-log: db/changelog/sync-service.yaml
+
+app:
+  kafka:
+    topic-replicas: 3
+    msisdn-data-sync-topic:
+      name: sim-cards-data
+      partitions: 30
+  workers:
+    msisdn-data-sync-pool: 4
+    msisdn-data-sync-batch: 10000
+    msisdn-data-sync-lag-hours: 24
+
+info:
+  app:
+    name: @project.name@
+    version: @project.version@
+    description: @project.description@

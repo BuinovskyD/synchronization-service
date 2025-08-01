@@ -1,0 +1,1 @@
+TRUNCATE sync.msisdn_data_snapshot;

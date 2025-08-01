@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: sync-service-db-schema-init
+      author: dbuinovsky@intech-global.com
+      changes:
+        - sqlFile:
+            dbms: postgresql
+            path: classpath:/sql/ddl/schema.sql

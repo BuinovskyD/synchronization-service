@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/data_storage
+    username: postgres
+    password: postgres
+  kafka:
+    bootstrap-servers: localhost:9094
+
+app:
+  kafka:
+    topic-replicas: 1

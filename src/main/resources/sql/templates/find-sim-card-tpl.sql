@@ -1,0 +1,1 @@
+SELECT msisdn, parsed_at FROM data.sim_cards WHERE msisdn = :msisdn

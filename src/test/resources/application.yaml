@@ -1,0 +1,36 @@
+#logging:
+#  level:
+#    org.springframework.jdbc.core: DEBUG
+
+spring:
+  liquibase:
+    enabled: false
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.LongSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+  thymeleaf:
+    mode: text
+    suffix: .sql
+    prefix: classpath:/sql/templates/
+    view-names: '*-tpl'
+
+info:
+  app:
+    name: synchronization-service
+    version: 0.0.1
+    description: Ksim synchronization service
+
+app:
+  kafka:
+    topic-replicas: 1
+    msisdn-data-sync-topic:
+      name: sim-cards-data
+      partitions: 1
+  workers:
+    msisdn-data-sync-pool: 1
+    msisdn-data-sync-batch: 10
+    msisdn-data-sync-lag-hours: 24
