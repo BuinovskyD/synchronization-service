@@ -2,7 +2,6 @@ package com.intech.rkn.ksim.synchronization_service.service.impl;
 
 import com.intech.rkn.ksim.synchronization_service.config.AppProperties;
 import com.intech.rkn.ksim.synchronization_service.dto.MsisdnSyncMessage;
-import com.intech.rkn.ksim.synchronization_service.dto.SimCardDto;
 import com.intech.rkn.ksim.synchronization_service.model.MsisdnData;
 import com.intech.rkn.ksim.synchronization_service.model.SimCard;
 import com.intech.rkn.ksim.synchronization_service.repository.MsisdnDataSnapshotRepository;
@@ -60,7 +59,7 @@ public class MsisdnDataSyncWorker implements Runnable {
     private void doWork() {
         transactionTemplate.execute(status -> {
             List<MsisdnData> unprocessed = snapshotRepository.findUnprocessed(properties.getWorkers().getMsisdnDataSyncBatch());
-            log.info("process batch of size {} records", unprocessed.size());
+            log.info("processing batch of size {} records", unprocessed.size());
 
             if (!unprocessed.isEmpty()) {
                 List<MsisdnData> result = unprocessed.stream().map(snapshotItem -> {

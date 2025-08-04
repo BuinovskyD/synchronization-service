@@ -14,7 +14,7 @@ public class AppConfig {
 
     @Bean
     public ExecutorService syncExecutors() {
-        return Executors.newCachedThreadPool();
+        return Executors.newFixedThreadPool(2);
     }
 
     @Bean

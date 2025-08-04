@@ -7,7 +7,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: app-db-pool
-      maximum-pool-size: 10
+      maximum-pool-size: 12
       connection-test-query: select 1
   thymeleaf:
     mode: text
@@ -32,7 +32,7 @@ app:
       name: sim-cards-data
       partitions: 30
   workers:
-    msisdn-data-sync-pool: 4
+    msisdn-data-sync-pool: 8
     msisdn-data-sync-batch: 10000
     msisdn-data-sync-lag-hours: 24
 

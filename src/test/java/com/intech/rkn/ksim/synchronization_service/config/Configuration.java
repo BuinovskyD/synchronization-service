@@ -5,13 +5,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.TopicBuilder;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
-
-import java.util.concurrent.CompletableFuture;
 
 @Import(Configuration.KafkaConfig.class)
 @TestConfiguration(proxyBeanMethods = false)
@@ -26,8 +23,7 @@ public class Configuration {
 	@Bean
 	@ServiceConnection
 	public PostgreSQLContainer<?> postgresContainer() {
-		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-				.withInitScripts("sql/schema.sql");
+		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest")).withInitScripts("sql/schema.sql");
 	}
 
 	@TestConfiguration

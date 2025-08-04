@@ -1,34 +1,22 @@
 package com.intech.rkn.ksim.synchronization_service.service;
 
 import com.intech.rkn.ksim.synchronization_service.config.Configuration;
-import com.intech.rkn.ksim.synchronization_service.dto.MsisdnSyncMessage;
 import com.intech.rkn.ksim.synchronization_service.model.MsisdnData;
-import com.intech.rkn.ksim.synchronization_service.model.SimCard;
 import com.intech.rkn.ksim.synchronization_service.repository.MsisdnDataSnapshotRepository;
 import com.intech.rkn.ksim.synchronization_service.repository.SimCardRepository;
 import com.intech.rkn.ksim.synchronization_service.service.impl.MsisdnDataSyncWorker;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.kafka.annotation.KafkaListener;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CompletableFuture;
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
 
+import static com.intech.rkn.ksim.synchronization_service.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @Slf4j
 @SpringBootTest
@@ -44,38 +32,89 @@ class MsisdnDataSyncWorkerTest {
 
     private MsisdnDataSyncWorker workerUnderTests;
 
-    private final BlockingQueue<ConsumerRecord<String, String>> records = new LinkedBlockingQueue<>();
-
     @BeforeEach
     void setUp() {
         this.workerUnderTests = workersFactory.getMsisdnDataSyncWorker(new CountDownLatch(1));
+        clearTables();
+        snapshotRepository.saveAll(getSnapshot());
     }
 
     @Test
-    void run() {
+    void shouldNotPerformSyncDueDatesEquality() {
+        simCardRepository.saveAll(getSimCardsWithEqualDates());
+
         workerUnderTests.run();
-        Iterable<MsisdnData> all = snapshotRepository.findAll();
-        assertThat(all).isNotEmpty();
+        Iterable<MsisdnData> result = snapshotRepository.findAll();
+
+        assertThat(result).isNotEmpty().allSatisfy(item -> {
+            assertThat(item.isProcessed()).isTrue();
+            assertThat(item.syncDone()).isFalse();
+        });
     }
 
     @Test
-    void run2() {
-        MsisdnData initDataValue1 = MsisdnData.builder().msisdn(9121690789L).parsedAt(LocalDateTime.of(2025,7,5,14,11,23)).operatorId(2).fileId(14).rowNum(270).isValid(true).isProcessed(false).syncDone(false).build();
-        MsisdnData initDataValue2 = MsisdnData.builder().msisdn(9121720330L).parsedAt(LocalDateTime.of(2025,7,17,8,34,11)).operatorId(4).fileId(22).rowNum(340).isValid(true).isProcessed(false).syncDone(false).build();
-        MsisdnData initDataValue3 = MsisdnData.builder().msisdn(9121756199L).parsedAt(LocalDateTime.of(2025,7,29,15,18,55)).operatorId(7).fileId(17).rowNum(826).isValid(false).isProcessed(false).syncDone(false).build();
-
-        SimCard simCardValue1 = SimCard.builder().msisdn(9121690789L).parsedAt(LocalDateTime.of(2025,7,5,14,11,23)).build();
-        SimCard simCardValue2 = SimCard.builder().msisdn(9121720330L).parsedAt(LocalDateTime.of(2025,7,17,8,34,11)).build();
-        SimCard simCardValue3 = SimCard.builder().msisdn(9121756199L).parsedAt(LocalDateTime.of(2025,7,29,15,18,55)).build();
-
-        snapshotRepository.saveAll(List.of(initDataValue1, initDataValue2, initDataValue3));
-        simCardRepository.saveAll(List.of(simCardValue1, simCardValue2, simCardValue3));
+    void shouldNotPerformSyncDueLagOfDatesLessThenOneDay() {
+        simCardRepository.saveAll(getSimCardsWithLagDatesLessThenOneDay());
 
         workerUnderTests.run();
+        Iterable<MsisdnData> result = snapshotRepository.findAll();
+
+        assertThat(result).isNotEmpty().allSatisfy(item -> {
+            assertThat(item.isProcessed()).isTrue();
+            assertThat(item.syncDone()).isFalse();
+        });
     }
 
-    @KafkaListener(id = "test-listener", topics = "sim-cards-data")
-    public void listen(ConsumerRecord<Long, MsisdnSyncMessage> record) {
-        log.info(record.toString());
+    @Test
+    void shouldPerformSyncDueLagOfDatesMoreThenOneDay() {
+        simCardRepository.saveAll(getSimCardsWithLagDatesMoreThenOneDay());
+
+        workerUnderTests.run();
+        Iterable<MsisdnData> result = snapshotRepository.findAll();
+
+        assertThat(result).isNotEmpty().allSatisfy(item -> {
+            assertThat(item.isProcessed()).isTrue();
+            assertThat(item.syncDone()).isTrue();
+        });
+    }
+
+    @Test
+    void shouldPerformSyncDueSimCardsDoesNotExists() {
+        simCardRepository.saveAll(Collections.emptyList());
+
+        workerUnderTests.run();
+        Iterable<MsisdnData> result = snapshotRepository.findAll();
+
+        assertThat(result).isNotEmpty().allSatisfy(item -> {
+            assertThat(item.isProcessed()).isTrue();
+            assertThat(item.syncDone()).isTrue();
+        });
+    }
+
+    @Test
+    void shouldPerformSyncForSingleSimCardDueItsLagOfDateMoreThenOneDay() {
+        simCardRepository.saveAll(getSimCardsWithLagDatesMoreThenOneDayForSingleSimCard());
+
+        workerUnderTests.run();
+        Iterable<MsisdnData> result = snapshotRepository.findAll();
+
+        assertThat(result).isNotEmpty()
+                .filteredOn(MsisdnData::syncDone)
+                .satisfiesExactly(item -> {
+                    assertThat(item.msisdn()).isEqualTo(TEST_MSISDN_2);
+                    assertThat(item.isProcessed()).isTrue();
+                });
+
+        assertThat(result)
+                .filteredOn(item -> !item.syncDone())
+                .allSatisfy(item -> {
+                    assertThat(item.isProcessed()).isTrue();
+                    assertThat(item.syncDone()).isFalse();
+                });
+    }
+
+    private void clearTables() {
+        snapshotRepository.deleteAll();
+        simCardRepository.deleteAll();
     }
 }
