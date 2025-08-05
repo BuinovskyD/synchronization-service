@@ -27,3 +27,21 @@ CREATE TABLE IF NOT EXISTS data.sim_cards(
     msisdn    bigint    NOT NULL UNIQUE,
     parsed_at timestamp NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS data.msisdns_data
+(
+    msisdn                bigint    PRIMARY KEY,
+    operator_id           integer   NOT NULL,
+    file_id               integer   NOT NULL,
+    parsed_at             timestamp NOT NULL,
+    row_num               integer
+);
+
+CREATE TABLE IF NOT EXISTS data.invalid_rows_data
+(
+    row_num           integer   NOT NULL,
+    file_id           integer   NOT NULL,
+    parsed_at         timestamp NOT NULL,
+    operator_id       integer   NOT NULL,
+    msisdn            bigint
+);

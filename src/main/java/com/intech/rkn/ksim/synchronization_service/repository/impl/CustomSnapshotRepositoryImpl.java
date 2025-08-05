@@ -13,6 +13,9 @@ public class CustomSnapshotRepositoryImpl extends AbstractRepository implements 
 
     private final String CLEAN_UP_SQL;
     private final String CREATE_SQL;
+    private final String VALID_MSISDN_DATA_SQL;
+    private final String INVALID_MSISDN_DATA_SQL;
+
     private final JdbcTemplate jdbcTemplate;
 
     public CustomSnapshotRepositoryImpl(ITemplateEngine templateEngine,
@@ -21,14 +24,27 @@ public class CustomSnapshotRepositoryImpl extends AbstractRepository implements 
         this.jdbcTemplate = jdbcTemplate;
         this.CLEAN_UP_SQL = getSql("clean-msisdn-data-snapshot-table-tpl");
         this.CREATE_SQL = getSql("msisdn-data-snapshot-tpl");
+        this.VALID_MSISDN_DATA_SQL = getSql("valid-msisdn-data-tpl");
+        this.INVALID_MSISDN_DATA_SQL = getSql("invalid-msisdn-data-tpl");
     }
+
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public void create() {
+//        log.info("cleaning up msisdns data snapshot table");
+//        jdbcTemplate.execute(CLEAN_UP_SQL);
+//        log.info("creating new snapshot of msisdns data");
+//        jdbcTemplate.execute(CREATE_SQL);
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create() {
         log.info("cleaning up msisdns data snapshot table");
         jdbcTemplate.execute(CLEAN_UP_SQL);
-        log.info("creating new snapshot of msisdns data");
-        jdbcTemplate.execute(CREATE_SQL);
+        log.info("inserting valid msisdns data to snapshot table");
+        jdbcTemplate.execute(VALID_MSISDN_DATA_SQL);
+        log.info("inserting invalid msisdns data to snapshot table");
+        jdbcTemplate.execute(INVALID_MSISDN_DATA_SQL);
     }
 }

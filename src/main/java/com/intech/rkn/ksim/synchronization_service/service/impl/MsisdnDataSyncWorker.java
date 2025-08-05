@@ -43,7 +43,7 @@ public class MsisdnDataSyncWorker implements Runnable {
 
     @Override
     public void run() {
-        log.info("start processing snapshot data...");
+        log.info("start processing snapshot data");
 
         try {
             while (!isDone) {
