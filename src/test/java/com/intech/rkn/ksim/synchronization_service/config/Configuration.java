@@ -23,8 +23,7 @@ public class Configuration {
 	@Bean
 	@ServiceConnection
 	public PostgreSQLContainer<?> postgresContainer() {
-		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-				.withInitScripts("sql/schema.sql", "sql/data.sql");
+		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest")).withInitScripts("sql/schema.sql");
 	}
 
 	@TestConfiguration

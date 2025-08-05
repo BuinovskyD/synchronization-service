@@ -11,7 +11,7 @@
 
 	<groupId>com.intech.rkn.ksim</groupId>
 	<artifactId>synchronization-service</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 	<name>synchronization-service</name>
 	<description>Ksim synchronization service</description>
 
