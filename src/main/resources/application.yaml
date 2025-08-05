@@ -31,6 +31,7 @@ app:
     msisdn-data-sync-topic:
       name: sim-cards-data
       partitions: 30
+  sync-request-executors-pool: 3
   workers:
     msisdn-data-sync-pool: 8
     msisdn-data-sync-batch: 10000

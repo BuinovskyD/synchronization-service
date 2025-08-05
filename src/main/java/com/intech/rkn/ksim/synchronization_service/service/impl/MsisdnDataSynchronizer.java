@@ -41,13 +41,12 @@ public class MsisdnDataSynchronizer implements Synchronizer {
     @Override
     public void synchronize() {
         try {
-            log.info("cleaning up msisdns data snapshot table...");
-            snapshotRepository.cleanUp();
+            log.info("start msisdns data synchronization");
+            snapshotRepository.create();
 
-            log.info("creating new snapshot of msisdns data...");
-            snapshotRepository.makeSnapshot();
-
+            log.info("submit synchronization task to {} workers", properties.getWorkers().getMsisdnDataSyncPool());
             CountDownLatch latch = new CountDownLatch(properties.getWorkers().getMsisdnDataSyncPool());
+
             IntStream.rangeClosed(1, properties.getWorkers().getMsisdnDataSyncPool())
                     .boxed()
                     .map(n -> workersFactory.getMsisdnDataSyncWorker(latch))

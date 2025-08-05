@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS sync;
 
 CREATE TABLE IF NOT EXISTS sync.msisdn_data_snapshot(
     id           bigserial PRIMARY KEY,
-    msisdn       bigint    NOT NULL UNIQUE,
+    msisdn       bigint    NOT NULL,
     parsed_at    timestamp NOT NULL,
     operator_id  integer   NOT NULL,
     file_id      integer   NOT NULL,

@@ -1,3 +1,4 @@
+INSERT INTO sync.msisdn_data_snapshot (msisdn, parsed_at, operator_id, file_id, row_num, is_valid)
 WITH invalid_snapshot AS (
     SELECT DISTINCT ON (msisdn) msisdn, parsed_at, operator_id, file_id, row_num, false AS is_valid
     FROM data.invalid_rows_data

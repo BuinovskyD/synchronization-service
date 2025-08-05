@@ -22,14 +22,14 @@ import static com.intech.rkn.ksim.synchronization_service.enums.SyncStatus.START
 @Service
 public class SyncServiceImpl implements SyncService {
 
-    private final ExecutorService syncExecutors;
+    private final ExecutorService syncRequestExecutors;
     private final SyncLogRepository logRepository;
     private final Map<SyncType, Synchronizer> synchronizers;
 
-    public SyncServiceImpl(ExecutorService syncExecutors,
+    public SyncServiceImpl(ExecutorService syncRequestExecutors,
                            SyncLogRepository logRepository,
                            List<Synchronizer> synchronizers) {
-        this.syncExecutors = syncExecutors;
+        this.syncRequestExecutors = syncRequestExecutors;
         this.logRepository = logRepository;
         this.synchronizers = synchronizers.stream()
                 .collect(Collectors.toMap(Synchronizer::type, Function.identity()));
@@ -45,18 +45,16 @@ public class SyncServiceImpl implements SyncService {
             if (syncLog.status().equals(STARTED)) {
                 log.error("{} sync already running", type);
                 throw new SyncAlreadyRunningException(String.format("%s sync already running", type));
-            } else {
-                return run(type);
             }
-        } else {
-            return run(type);
         }
+
+        return run(type);
     }
 
     private long run(SyncType type) {
         SyncLog logEntity = logRepository.save(SyncLog.create(type));
 
-        CompletableFuture.runAsync(synchronizers.get(type)::synchronize, syncExecutors)
+        CompletableFuture.runAsync(synchronizers.get(type)::synchronize, syncRequestExecutors)
                 .whenComplete((result, error) -> {
                     SyncLog logEntityResult;
 
