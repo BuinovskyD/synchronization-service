@@ -15,7 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.thymeleaf.ITemplateEngine;
 import java.time.LocalDateTime;
 
+import static com.intech.rkn.ksim.synchronization_service.TestUtils.TEST_MSISDN_2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @Slf4j
 @SpringBootTest
@@ -42,7 +44,7 @@ class CustomSnapshotRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/snapshot-test-data-1.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/snapshot-test-data-1.sql", executionPhase = BEFORE_TEST_METHOD)
     void shouldReturnSnapshotWithCorrectInvalidMsisdn() {
         repositoryUnderTests.create();
 
@@ -50,7 +52,7 @@ class CustomSnapshotRepositoryImplTest {
 
         assertThat(result).isNotEmpty().hasSize(3);
 
-        assertThat(result).filteredOn(item -> item.msisdn().equals(9121720330L))
+        assertThat(result).filteredOn(item -> item.msisdn().equals(TEST_MSISDN_2))
                 .isNotEmpty().hasSize(1)
                 .satisfiesExactly(item -> {
                     assertThat(item.isValid()).isFalse();
@@ -59,13 +61,13 @@ class CustomSnapshotRepositoryImplTest {
                     assertThat(item.fileId()).isEqualTo(70);
                 });
 
-        assertThat(result).filteredOn(item -> !item.msisdn().equals(9121720330L))
+        assertThat(result).filteredOn(item -> !item.msisdn().equals(TEST_MSISDN_2))
                 .isNotEmpty().hasSize(2)
                 .allSatisfy(item -> assertThat(item.isValid()).isTrue());
     }
 
     @Test
-    @Sql(scripts = "/sql/snapshot-test-data-2.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/snapshot-test-data-2.sql", executionPhase = BEFORE_TEST_METHOD)
     void shouldReturnSnapshotOnlyWithValidMsisdns() {
         repositoryUnderTests.create();
 
@@ -76,7 +78,7 @@ class CustomSnapshotRepositoryImplTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/snapshot-test-data-3.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/snapshot-test-data-3.sql", executionPhase = BEFORE_TEST_METHOD)
     void shouldReturnSnapshotOnlyWithInvalidMsisdns() {
         repositoryUnderTests.create();
 

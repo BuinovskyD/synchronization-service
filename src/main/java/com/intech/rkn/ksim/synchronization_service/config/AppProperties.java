@@ -49,7 +49,7 @@ public class AppProperties {
         @Min(100)
         private int msisdnDataSyncBatch;
 
-        @Min(100)
+        @Min(12)
         private int msisdnDataSyncLagHours;
     }
 }

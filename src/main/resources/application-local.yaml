@@ -9,3 +9,7 @@ spring:
 app:
   kafka:
     topic-replicas: 1
+  workers:
+    msisdn-data-sync-pool: 2
+    msisdn-data-sync-batch: 10000
+    msisdn-data-sync-lag-hours: 24

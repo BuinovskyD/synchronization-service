@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS sync.msisdn_data_snapshot(
     parsed_at    timestamp NOT NULL,
     operator_id  integer   NOT NULL,
     file_id      integer   NOT NULL,
-    row_num      integer   NOT NULL,
+    row_num      integer,
     is_valid     boolean   NOT NULL,
     is_processed boolean   NOT NULL DEFAULT false,
     sync_done    boolean   NOT NULL DEFAULT false

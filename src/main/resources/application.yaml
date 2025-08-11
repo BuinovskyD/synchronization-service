@@ -7,7 +7,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: app-db-pool
-      maximum-pool-size: 12
+      minimum-idle: 10
+      maximum-pool-size: 25
       connection-test-query: select 1
   thymeleaf:
     mode: text
@@ -18,6 +19,12 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.LongSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
   task:
     scheduling:
       pool:
@@ -32,10 +39,6 @@ app:
       name: sim-cards-data
       partitions: 30
   sync-request-executors-pool: 3
-  workers:
-    msisdn-data-sync-pool: 8
-    msisdn-data-sync-batch: 10000
-    msisdn-data-sync-lag-hours: 24
 
 info:
   app:
