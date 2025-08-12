@@ -1,6 +1,5 @@
-package com.intech.rkn.ksim.synchronization_service.service;
+package com.intech.rkn.ksim.synchronization_service.service.worker;
 
-import com.intech.rkn.ksim.synchronization_service.service.impl.MsisdnDataSyncWorker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Component;
@@ -12,4 +11,7 @@ public abstract class SyncWorkersFactory {
 
     @Lookup
     public abstract MsisdnDataSyncWorker getMsisdnDataSyncWorker(CountDownLatch latch);
+
+    @Lookup
+    public abstract MnpComparisonWorker getMnpComparisonWorker(CountDownLatch latch);
 }

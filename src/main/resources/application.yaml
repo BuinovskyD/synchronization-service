@@ -39,6 +39,7 @@ app:
       name: sim-cards-data
       partitions: 30
   sync-request-executors-pool: 3
+  mnp.source: sftp
 
 info:
   app:

@@ -4,8 +4,9 @@ import com.intech.rkn.ksim.synchronization_service.enums.SyncType;
 import com.intech.rkn.ksim.synchronization_service.model.SyncLog;
 import com.intech.rkn.ksim.synchronization_service.repository.MsisdnDataSnapshotRepository;
 import com.intech.rkn.ksim.synchronization_service.repository.SyncLogRepository;
-import com.intech.rkn.ksim.synchronization_service.service.impl.MsisdnDataSynchronizer;
-import com.intech.rkn.ksim.synchronization_service.service.impl.SyncServiceImpl;
+import com.intech.rkn.ksim.synchronization_service.service.synchronizer.MsisdnDataSynchronizer;
+import com.intech.rkn.ksim.synchronization_service.service.synchronizer.Synchronizer;
+import com.intech.rkn.ksim.synchronization_service.service.worker.SyncWorkersFactory;
 import com.intech.rkn.ksim.synchronization_service.utils.SyncAlreadyRunningException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,6 @@ class SyncServiceTest {
         List<Synchronizer> synchronizers = List.of(
                 new MsisdnDataSynchronizer(getWorkerProperties(), workersFactoryMock, snapshotRepositoryMock));
 
-        this.serviceUnderTests = new SyncServiceImpl(executorServiceMock, logRepository, synchronizers);
+        this.serviceUnderTests = new SyncService(executorServiceMock, logRepository, synchronizers);
     }
 }

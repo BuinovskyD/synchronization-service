@@ -1,5 +1,6 @@
 package com.intech.rkn.ksim.synchronization_service.repository.impl;
 
+import com.intech.rkn.ksim.synchronization_service.repository.AbstractRepository;
 import com.intech.rkn.ksim.synchronization_service.repository.CustomSnapshotRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +13,6 @@ import org.thymeleaf.ITemplateEngine;
 public class CustomSnapshotRepositoryImpl extends AbstractRepository implements CustomSnapshotRepository {
 
     private final String CLEAN_UP_SQL;
-    private final String CREATE_SQL;
     private final String VALID_MSISDN_DATA_SQL;
     private final String INVALID_MSISDN_DATA_SQL;
 
@@ -23,19 +23,9 @@ public class CustomSnapshotRepositoryImpl extends AbstractRepository implements 
         super(templateEngine);
         this.jdbcTemplate = jdbcTemplate;
         this.CLEAN_UP_SQL = getSql("clean-msisdn-data-snapshot-table-tpl");
-        this.CREATE_SQL = getSql("msisdn-data-snapshot-tpl");
         this.VALID_MSISDN_DATA_SQL = getSql("valid-msisdn-data-tpl");
         this.INVALID_MSISDN_DATA_SQL = getSql("invalid-msisdn-data-tpl");
     }
-
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public void create() {
-//        log.info("cleaning up msisdns data snapshot table");
-//        jdbcTemplate.execute(CLEAN_UP_SQL);
-//        log.info("creating new snapshot of msisdns data");
-//        jdbcTemplate.execute(CREATE_SQL);
-//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

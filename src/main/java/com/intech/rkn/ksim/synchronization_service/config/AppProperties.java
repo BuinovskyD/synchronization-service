@@ -14,6 +14,9 @@ public class AppProperties {
     @Min(1)
     private int syncRequestExecutorsPool;
 
+    @NotBlank
+    private String zniisConnectorUrl;
+
     @Valid
     private Kafka kafka = new Kafka();
 
@@ -51,5 +54,11 @@ public class AppProperties {
 
         @Min(12)
         private int msisdnDataSyncLagHours;
+
+        @Min(1)
+        private int mnpDataComparisonPool;
+
+        @Min(100)
+        private int mnpDataComparisonBatch;
     }
 }

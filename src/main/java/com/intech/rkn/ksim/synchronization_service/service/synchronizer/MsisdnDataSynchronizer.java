@@ -1,10 +1,9 @@
-package com.intech.rkn.ksim.synchronization_service.service.impl;
+package com.intech.rkn.ksim.synchronization_service.service.synchronizer;
 
 import com.intech.rkn.ksim.synchronization_service.config.AppProperties;
 import com.intech.rkn.ksim.synchronization_service.enums.SyncType;
 import com.intech.rkn.ksim.synchronization_service.repository.MsisdnDataSnapshotRepository;
-import com.intech.rkn.ksim.synchronization_service.service.Synchronizer;
-import com.intech.rkn.ksim.synchronization_service.service.SyncWorkersFactory;
+import com.intech.rkn.ksim.synchronization_service.service.worker.SyncWorkersFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

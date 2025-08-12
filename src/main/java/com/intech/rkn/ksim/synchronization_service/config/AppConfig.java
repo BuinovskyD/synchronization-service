@@ -7,9 +7,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.web.client.RestClient;
+
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@EnableRetry
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
@@ -30,5 +38,17 @@ public class AppConfig {
                 .info(new Info().title(title)
                         .description(description)
                         .version(version));
+    }
+
+    @Bean
+    public RestClient zniisRestClient() {
+        var factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(Duration.ofMillis(30000));
+        factory.setReadTimeout(Duration.ofMillis(30000));
+
+        return RestClient.builder()
+                .baseUrl(properties.getZniisConnectorUrl())
+                .requestFactory(factory)
+                .build();
     }
 }

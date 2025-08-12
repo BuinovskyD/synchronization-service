@@ -1,4 +1,4 @@
-package com.intech.rkn.ksim.synchronization_service.service.impl;
+package com.intech.rkn.ksim.synchronization_service.service.worker;
 
 import com.intech.rkn.ksim.synchronization_service.config.AppProperties;
 import com.intech.rkn.ksim.synchronization_service.dto.MsisdnSyncMessage;

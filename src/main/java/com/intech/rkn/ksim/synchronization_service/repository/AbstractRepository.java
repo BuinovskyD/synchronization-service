@@ -1,4 +1,4 @@
-package com.intech.rkn.ksim.synchronization_service.repository.impl;
+package com.intech.rkn.ksim.synchronization_service.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.thymeleaf.ITemplateEngine;
@@ -8,15 +8,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
-public class AbstractRepository {
+public abstract class AbstractRepository {
 
     private final ITemplateEngine templateEngine;
 
     protected String getSql(String templateName) {
         return templateEngine.process(templateName, new Context());
-    }
-
-    protected static LocalDateTime toLocalDateTime(Timestamp timestamp) {
-        return timestamp == null ? null : timestamp.toLocalDateTime();
     }
 }

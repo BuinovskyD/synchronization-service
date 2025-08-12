@@ -32,3 +32,7 @@ app:
     msisdn-data-sync-pool: 1
     msisdn-data-sync-batch: 10
     msisdn-data-sync-lag-hours: 24
+    mnp-data-comparison-pool: 1
+    mnp-data-comparison-batch: 10
+  zniis-connector-url: http://localhost:8090
+  mnp.source: filesystem
